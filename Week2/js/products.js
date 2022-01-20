@@ -45,9 +45,12 @@ createApp ({
     },
     mounted() {
         //取出 token
-        //再了解
+        //再了解 正規表達式 /  /
+        // [] 集合
+        // . 代替所有字元
+        //
         const token = document.cookie.replace(/(?:(?:^|.*;\s*)groenToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
-        console.log(token);
+        
         //全域 axios 授權是否等於 token
         axios.defaults.headers.common.Authorization = token;
 
