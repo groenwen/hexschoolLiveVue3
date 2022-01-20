@@ -19,7 +19,8 @@
             請先登入
           </h1>
           <div class="col-8">
-            <!-- @submit.prevent -->
+            <!-- v-on：縮寫 @
+              prevent：修飾符會叫用 event.preventDefault() 阻止表單送出 -->
             <form id="form" class="form-signin" @submit.prevent="login">
               <div class="form-floating mb-3">
                 <input type="email" v-model="user.username" class="form-control" id="username"
