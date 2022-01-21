@@ -10,7 +10,7 @@ createApp ({
         }
     },
     methods: {
-        //確認使用者
+        //驗證使用者
         checkAdmin(){
             //驗證 API
             const url = `${this.apiUrl}/api/user/check`;
@@ -31,9 +31,8 @@ createApp ({
             const url = `${this.apiUrl}/api/${this.api_path}/admin/products`;
             axios.get(url)
                 .then((res) => {
-                    // 取得 Products 存入 this.products 
+                    // 取得所有產品資料 存入 products 
                     this.products = res.data.products;
-                    console.log(res.data.products);
                 })
                 .catch((err) => {
                     alert(err.data.message);
@@ -45,15 +44,10 @@ createApp ({
     },
     mounted() {
         //取出 token
-        //再了解 正規表達式 /  /
-        // [] 集合
-        // . 代替所有字元
-        //
         const token = document.cookie.replace(/(?:(?:^|.*;\s*)groenToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
         
-        //全域 axios 授權是否等於 token
+        //驗證使用者
         axios.defaults.headers.common.Authorization = token;
-
         this.checkAdmin();
     }
 

@@ -43,11 +43,13 @@
                   <td width="120">
                     {{ item.price }}
                   </td>
-                  <td width="150">
-                    <span class="text-success" v-if="item.is_enabled">啟用</span>
-                    <span v-else>未啟用</span>
+                  <!-- Week1 建議增加 啟用/未啟用切換 -->
+                  <td width="150" v-on:click="item.is_enabled ? item.is_enabled=0 : item.is_enabled=1">
+                    <span class="text-success" v-if="item.is_enabled" role="button">啟用</span>
+                    <span v-else role="button">未啟用</span>
                   </td>
                   <td width="120">
+                    <!-- 選取的該筆資料 存入 productItem -->
                     <button type="button" class="btn btn-primary" v-on:click="productItem = item">查看細節</button>
                   </td>
                 </tr>
@@ -57,6 +59,7 @@
           </div>
           <div class="col-md-6">
             <h2>單一產品細節</h2>
+            <!-- if 選擇產品時 顯示產品訊息 -->
             <template v-if="productItem.title">
               <div class="card mb-3">
                 <img v-bind:src="productItem.imageUrl" class="card-img-top primary-image" alt="主圖">
@@ -68,9 +71,9 @@
                   <p class="card-text">商品描述：{{ productItem.description }}</p>
                   <p class="card-text">商品內容：{{ productItem.content }}</p>
                   <div class="d-flex">
-                    <p class="card-text me-2">{{ productItem.price }}</p>
-                    <p class="card-text text-secondary"><del>{{ productItem.origin_price }}</del></p>
-                     / {{ productItem.unit }} 元
+                    <p class="card-text me-2">${{ productItem.price }}</p>
+                    <p class="card-text text-secondary"><del>${{ productItem.origin_price }}</del> </p>
+                    {{ productItem.unit }} / 元
                   </div>
                 </div>
               </div>
@@ -78,6 +81,7 @@
                 <img v-bind:src="img" alt="" class="images m-2">
               </template>
             </template>
+            <!-- else 沒選擇產品時 顯示此文字 -->
             <p class="text-secondary" v-else>請選擇一個商品查看</p>
           </div>
         </div>
