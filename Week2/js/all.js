@@ -5,7 +5,7 @@ createApp ({
     data(){
         return {
             user: {
-                username: 'yuwen7005@gmail.com',
+                username: '',
                 password: '',
             },
             isloading: false
@@ -24,7 +24,7 @@ createApp ({
                 const {token, expired} = res.data;
                 document.cookie=`groenToken=${token};expires=${new Date(expired)};path=/`;
                 this.isloading = false;
-                
+
                 //轉至 產品頁面
                 window.location = 'products.html';
             }).catch((err) => {
