@@ -49,11 +49,13 @@
               <td class="text-end">${{ item.price }}</td>
               <td >
                 <!-- 切換 啟用 / 未啟用 -->
-                <div class="form-check form-switch" @click="item.is_enabled ? item.is_enabled = 0 : item.is_enabled = 1">
+                <div class="form-check form-switch" @click="item.is_enabled ? item.is_enabled = 0 : item.is_enabled = 1; productItem = item; updateProduct()">
                   <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" :checked="item.is_enabled">
                   <label class="form-check-label" for="flexSwitchCheckDefault" v-if="item.is_enabled">啟用</label>
                   <label class="form-check-label" for="flexSwitchCheckDefault" v-else>未啟用</label>
                 </div>
+                <!-- <span v-if="item.is_enabled" class="text-success">啟用</span>
+                <span v-else>未啟用</span> -->
               </td>
               <td>
                 <div class="btn-group">
@@ -74,7 +76,7 @@
       <!-- Modal -->
       <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
            aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
               <h5 id="productModalLabel" class="modal-title">
