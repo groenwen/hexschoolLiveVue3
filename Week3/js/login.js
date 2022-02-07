@@ -12,22 +12,26 @@ createApp({
     },
     methods:{
         login(){
-            const api = 'https://vue3-course-api.hexschool.io/v2/admin/signin';
-            console.log('hello');
-            axios.post(api, this.user)
+            const url = `https://vue3-course-api.hexschool.io/v2/admin/signin`;
+            axios.post(url, this.user)
             .then((res) => {
-                const { token, expired } = res.data;
-                console.log(res, res.data.token);
-                //將 token 存入 cookie
-                document.cookie = `groenToken=${token};expires=${expired};path=/`;
-                // window.location = './';
+                //登入成功
+                // 取得 登入資料 並存入 cookie
+                const {token, expired } = res.data;
+                document.cookie = `groenToken=${token};expires=${new Date(expired)};path=/`;
+
+                // 登入成功 轉至 產品頁面
+                window.location = `index.html`;
             })
             .catch((err) => {
-                alert(err.data);
-                console.log(err);
-            });
-
-            
+                //登入失敗
+                //顯示 錯誤訊息
+                alert(err.data.message)
+            })
         }
+
+    },
+    mounted(){
+
     }
 }).mount('#app');
