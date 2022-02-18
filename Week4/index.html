@@ -72,10 +72,12 @@
             </tr>
           </tbody>
         </table>
-        <pagination :pages="pagination" @emit-pages="getProducts"></pagination>
-        <!-- modal -->
-        <product-modal-temp :is-new="isNew" :product-item="productItem" @emit-update-product="updateProduct" @emit-create-images="createImages" @emit-del-images="delImage"></product-modal-temp>
-        <del-product-modal-temp :is-new="isNew" :product-item="productItem" @emit-del="getProducts"></del-product-modal-temp>
+        <!-- 元件註冊 -->
+        <!-- 分頁元件 -->
+        <pagination :pages="pagination" @emit-pages="updateProducts"></pagination>
+        <!-- modal 元件 -->
+        <product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></product-modal-temp>
+        <del-product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></del-product-modal-temp>
         
       </div>
    
@@ -224,7 +226,7 @@
                 取消
               </button>
               <!-- 更新產品資訊 -->
-              <button type="button" class="btn btn-primary" @click="emitUpdateProduct">
+              <button type="button" class="btn btn-primary" @click="getProduct">
                 確認
               </button>
             </div>
@@ -271,6 +273,7 @@
             integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
             crossorigin="anonymous"></script>
     <script src="./js/products.js" type="module"></script>
+
 
   </body>
 
