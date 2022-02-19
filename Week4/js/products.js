@@ -1,5 +1,5 @@
 import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.9/vue.esm-browser.js';
-import pagination from '../js/pagination.js';
+import pagination from './paginationTemp.js';
 // 登入 - (API) 進入產品頁面 (/v2/admin/signin)
 // 產品頁面 - 驗證 (/v2/api/user/check)
 // 產品頁面 - 取得產品資料 顯示於頁面 (/v2/api/groen/admin/products/all)
