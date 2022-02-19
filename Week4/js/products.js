@@ -10,10 +10,6 @@ import delProductModalTemp from '../js/delProductModalTemp.js';
 // 產品頁面 - 編輯產品 (put /v2/api/groen/admin/product/{id})
 // 產品頁面 - 刪除產品  (delete /v2/api/groen/admin/product/{id})
 
-// 建立 元件 使用區域註冊
-
-// 範例中為何在元件中 還要建立 openModal & hideModal 
-
 
 let productModal = null;
 let delProductModal = null;
@@ -42,7 +38,6 @@ const app = createApp({
     },
     components: {
         pagination,
-        switchTemp,
         productModalTemp,
         delProductModalTemp
         

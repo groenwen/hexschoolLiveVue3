@@ -72,26 +72,15 @@
             </tr>
           </tbody>
         </table>
-        <!-- 元件註冊 -->
         <!-- 分頁元件 -->
         <pagination :pages="pagination" @emit-pages="updateProducts"></pagination>
-        <!-- modal 元件 -->
-        <product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></product-modal-temp>
-        <del-product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></del-product-modal-temp>
       </div>
+      <!-- modal 元件 -->
+      <product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></product-modal-temp>
+      <del-product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></del-product-modal-temp>
     </div>
-    <!-- app end -->
-    <!-- switch -->
-    <script type="text/x-template" id="switchTemp">
-      <!-- 切換 啟用 / 未啟用 -->
-      <div class="form-check form-switch" @click="item.is_enabled ? item.is_enabled = 0 : item.is_enabled = 1; productItem = item; updateProducts()">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" :checked="item.is_enabled">
-        <label class="form-check-label" for="flexSwitchCheckDefault" v-if="item.is_enabled">啟用</label>
-        <label class="form-check-label" for="flexSwitchCheckDefault" v-else>未啟用</label>
-      </div>
-    
-    </script>
-    <!-- pagination -->
+
+    <!-- template pagination -->
     <script type="text/x-template" id="pagination">
       <nav aria-label="Page navigation example">
         <ul class="pagination">
@@ -111,7 +100,7 @@
         </ul>
       </nav>
     </script>
-    <!-- 新增 / 編輯 modal -->
+    <!-- template 新增 / 編輯 modal -->
     <script type="text/x-template" id="productModalTemp">
       <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
           aria-hidden="true">
@@ -130,7 +119,7 @@
                   <div class="mb-2">
                     <div class="mb-3">
                       <label for="imageUrl" class="form-label">主要圖片</label>
-                      <input type="text" class="form-control"
+                        <input type="text" class="form-control"
                             placeholder="請輸入圖片連結" v-model="productItem.imageUrl">
                     </div>
                     <img class="img-fluid" :src="productItem.imageUrl" alt="" >
@@ -240,10 +229,10 @@
         </div>
       </div>
     </script>
-    <!-- 刪除 modal -->
+      <!-- template 刪除 modal -->
     <script type="text/x-template" id="delProductModalTemp">
       <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
-           aria-labelledby="delProductModalLabel" aria-hidden="true">
+          aria-labelledby="delProductModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content border-0">
             <div class="modal-header bg-danger text-white">
