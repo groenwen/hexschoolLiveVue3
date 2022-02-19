@@ -45,11 +45,5 @@ export default {
         },
     },
     mounted(){
-        // bootstrap modal 建立
-        productModal = new bootstrap.Modal(document.getElementById('productModal'), {
-            backdrop: 'static',
-            keyboard: false,
-            
-        });
     }
 }

@@ -42,6 +42,7 @@ const app = createApp({
     },
     components: {
         pagination,
+        switchTemp,
         productModalTemp,
         delProductModalTemp
         
@@ -82,6 +83,19 @@ const app = createApp({
                     alert(err.data.message);
                 });
         },
+        updateProduct(){
+            const url = `${this.apiUrl}/api/${this.api_path}/admin/product/${this.productItem.id}`;
+
+            axios.put(url, {data: this.productItem})
+            .then((res) => {
+                alert(res.data.message);
+                //關閉 modal
+                productModal.hide();
+            })
+            .catch((err) => {
+                alert(err.data.message);
+            });
+        },
         // modal 控制
         openModal(isNew, item){
             // 新增產品
@@ -109,6 +123,19 @@ const app = createApp({
         
     },
     mounted(){
+        // bootstrap modal 建立
+        productModal = new bootstrap.Modal(document.getElementById('productModal'), {
+            backdrop: 'static',
+            keyboard: false,
+            
+        });
+
+        delProductModal = new bootstrap.Modal(document.getElementById('delProductModal'), {
+            backdrop: 'static',
+            keyboard: false,
+
+        });
+
         this.checkAdmin();
     }
 });

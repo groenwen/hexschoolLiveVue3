@@ -78,12 +78,19 @@
         <!-- modal 元件 -->
         <product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></product-modal-temp>
         <del-product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></del-product-modal-temp>
-        
       </div>
-   
     </div>
     <!-- app end -->
-
+    <!-- switch -->
+    <script type="text/x-template" id="switchTemp">
+      <!-- 切換 啟用 / 未啟用 -->
+      <div class="form-check form-switch" @click="item.is_enabled ? item.is_enabled = 0 : item.is_enabled = 1; productItem = item; updateProducts()">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" :checked="item.is_enabled">
+        <label class="form-check-label" for="flexSwitchCheckDefault" v-if="item.is_enabled">啟用</label>
+        <label class="form-check-label" for="flexSwitchCheckDefault" v-else>未啟用</label>
+      </div>
+    
+    </script>
     <!-- pagination -->
     <script type="text/x-template" id="pagination">
       <nav aria-label="Page navigation example">
@@ -103,12 +110,11 @@
         </li>
         </ul>
       </nav>
-      <p>{{ pages }}</p>
     </script>
     <!-- 新增 / 編輯 modal -->
     <script type="text/x-template" id="productModalTemp">
       <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
-           aria-hidden="true">
+          aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
@@ -125,7 +131,7 @@
                     <div class="mb-3">
                       <label for="imageUrl" class="form-label">主要圖片</label>
                       <input type="text" class="form-control"
-                             placeholder="請輸入圖片連結" v-model="productItem.imageUrl">
+                            placeholder="請輸入圖片連結" v-model="productItem.imageUrl">
                     </div>
                     <img class="img-fluid" :src="productItem.imageUrl" alt="" >
                   </div>
@@ -138,7 +144,7 @@
                       <div class="mb-3">
                         <label for="imageUrl" class="form-label">圖片網址</label>
                         <input type="text" class="form-control"
-                               v-model="productItem.imagesUrl[key]">
+                              v-model="productItem.imagesUrl[key]">
                       </div>
                       <img class="img-fluid" :src="img" alt="" >
                       <!-- 刪除 單一圖片  按鈕 -->
@@ -176,7 +182,7 @@
                     <div class="mb-3 col-md-6">
                       <label for="category" class="form-label">分類</label>
                       <input id="category" type="text" class="form-control"
-                             placeholder="請輸入分類" v-model="productItem.category">
+                            placeholder="請輸入分類" v-model="productItem.category">
                     </div>
                     <div class="mb-3 col-md-6">
                       <label for="price" class="form-label">單位</label>
@@ -194,7 +200,7 @@
                       <label for="price" class="form-label">售價</label>
                       <!-- 若 單純使用 v-model 而非 v-model.number 會顯示 型別錯誤 (轉為 number) -->
                       <input id="price" type="number" min="0" class="form-control"
-                             placeholder="請輸入售價" v-model.number="productItem.price">
+                            placeholder="請輸入售價" v-model.number="productItem.price">
                     </div>
                   </div>
                   <hr>
@@ -214,7 +220,7 @@
                   <div class="mb-3">
                     <div class="form-check">
                       <input id="is_enabled" class="form-check-input" type="checkbox"
-                             :true-value="1" :false-value="0" v-model="productItem.is_enabled">
+                            :true-value="1" :false-value="0" v-model="productItem.is_enabled">
                       <label class="form-check-label" for="is_enabled">是否啟用</label>
                     </div>
                   </div>

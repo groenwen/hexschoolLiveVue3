@@ -26,12 +26,5 @@ export default {
         },
     },
     mounted(){
-        // bootstrap modal 建立
-        delProductModal = new bootstrap.Modal(document.getElementById('delProductModal'), {
-            backdrop: 'static',
-            keyboard: false,
-
-        });
-        
     }
 }
