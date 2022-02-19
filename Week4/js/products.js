@@ -1,7 +1,5 @@
 import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.9/vue.esm-browser.js';
 import pagination from '../js/pagination.js';
-import productModalTemp from '../js/productModalTemp.js';
-import delProductModalTemp from '../js/delProductModalTemp.js';
 // 登入 - (API) 進入產品頁面 (/v2/admin/signin)
 // 產品頁面 - 驗證 (/v2/api/user/check)
 // 產品頁面 - 取得產品資料 顯示於頁面 (/v2/api/groen/admin/products/all)
@@ -15,7 +13,6 @@ let productModal = null;
 let delProductModal = null;
 
 const app = createApp({
-
     data(){
         return {
             apiUrl: 'https://vue3-course-api.hexschool.io/v2',
@@ -36,11 +33,9 @@ const app = createApp({
             }
         }
     },
+    //區域註冊
     components: {
-        pagination,
-        productModalTemp,
-        delProductModalTemp
-        
+        pagination
     },
     methods:{
         checkAdmin(){
@@ -118,20 +113,101 @@ const app = createApp({
         
     },
     mounted(){
-        // bootstrap modal 建立
+        this.checkAdmin();
+    }
+});
+
+// 全域註冊
+app.component('productModalTemp', {
+    data(){
+        return {
+            apiUrl: 'https://vue3-course-api.hexschool.io/v2',
+            api_path: 'groen',
+        }
+    },
+    template: '#productModalTemp',
+    props: ['isNew', 'productItem'],
+    methods: {
+        getProduct() {
+            //新增產品 api 資訊
+            let url = `${this.apiUrl}/api/${this.api_path}/admin/product`;
+            let http = 'post';
+
+            // isNew = false 代表為點擊 編輯產品
+            if (!this.isNew){
+                url = `${this.apiUrl}/api/${this.api_path}/admin/product/${this.productItem.id}`;
+                http = 'put'
+            }
+
+            axios[http](url, {data: this.productItem})
+            .then((res) => {
+                alert(res.data.message);
+                //關閉 modal
+                this.hideModal();
+                //更新 產品列表
+                this.$emit('update');
+            })
+            .catch((err) => {
+                alert(err.data.message);
+            })
+        },
+        // 多圖-新增圖片
+        createImages() {
+            this.productItem.imagesUrl = [];
+            this.productItem.imagesUrl.push('');
+        },
+        //多圖-刪除 單一圖片
+        delImage(key) {
+            this.productItem.imagesUrl.splice(key, 1);
+        },
+        openModal(){
+            productModal.show();
+        },
+        hideModal(){
+            productModal.hide();
+        }
+    },
+    mounted(){
         productModal = new bootstrap.Modal(document.getElementById('productModal'), {
             backdrop: 'static',
             keyboard: false,
-            
         });
+    }
+});
 
+app.component('delProductModalTemp', {
+    data(){
+        return {
+            apiUrl: 'https://vue3-course-api.hexschool.io/v2',
+            api_path: 'groen'
+        }
+    },
+    template: '#delProductModalTemp',
+    props: ['isNew', 'productItem'],
+    methods: {
+        // 刪除產品
+        delProduct(){
+            const url = `${this.apiUrl}/api/${this.api_path}/admin/product/${this.productItem.id}`;
+
+            axios.delete(url, this.productItem.id)
+            .then((res) => {
+                alert(res.data.message);
+                //關閉 modal
+                delProductModal.hide();
+                //更新 產品列表
+                this.$emit('update');
+            })
+            .catch((err) => {
+                alert(err.data.message)
+            });
+        },
+    },
+    mounted(){
         delProductModal = new bootstrap.Modal(document.getElementById('delProductModal'), {
             backdrop: 'static',
             keyboard: false,
 
         });
-
-        this.checkAdmin();
     }
 });
 
