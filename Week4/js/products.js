@@ -7,12 +7,35 @@ import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.9/vue.
 // 產品頁面 - 編輯產品 (put /v2/api/groen/admin/product/{id})
 // 產品頁面 - 刪除產品  (delete /v2/api/groen/admin/product/{id})
 
+// 元件化
+// 區域註冊
+// pagination
+
 
 let productModal = null;
 let delProductModal = null;
 
 
-createApp({
+const pagination = {
+    data(){
+        return {
+            text: '區域註冊'
+        }
+    },
+    template: '#pagination'
+}
+
+const pagination2 = {
+    data(){
+        return {
+            text: '22222'
+        }
+    },
+    template: '<div>{{ text }}</div>'
+}
+
+
+const app = createApp({
 
     data(){
         return {
@@ -30,6 +53,10 @@ createApp({
                 imagesUrl: [],
             }
         }
+    },
+    components: {
+        pagination,
+        pagination2
     },
     methods:{
         checkAdmin(){
@@ -155,4 +182,9 @@ createApp({
 
         this.checkAdmin();
     }
-}).mount('#app');
+});
+
+
+
+
+app.mount('#app');
