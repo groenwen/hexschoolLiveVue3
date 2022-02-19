@@ -72,37 +72,41 @@
             </tr>
           </tbody>
         </table>
-
-        <!-- 頁面 -->
-        <pagination></pagination>
-        <pagination2></pagination2>
+        <!-- 元件註冊 -->
+        <!-- 分頁元件 -->
+        <pagination :pages="pagination" @emit-pages="updateProducts"></pagination>
+        <!-- modal 元件 -->
+        <product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></product-modal-temp>
+        <del-product-modal-temp :is-new="isNew" :product-item="productItem" @update="updateProducts"></del-product-modal-temp>
+        
       </div>
-      
+   
     </div>
+    <!-- app end -->
 
-    <!-- 分頁元件 -->
+    <!-- pagination -->
     <script type="text/x-template" id="pagination">
       <nav aria-label="Page navigation example">
         <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
+        <li class="page-item" :class="{disabled : !pages.has_pre}">
+            <a class="page-link" href="#" aria-label="Previous" @click.prevent="emitPages(pages.current_page - 1)">
+            <span aria-hidden="true">&laquo;</span>
             </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
+        </li>
+        <li class="page-item" v-for="item in pages.total_pages" :key="item" :class="{ active : pages.current_page === item }">
+          <a class="page-link"  href="#" @click.prevent="emitPages(item)">{{ item }}</a>
+        </li>
+        <li class="page-item" :class="{disabled : !pages.has_next}">
+            <a class="page-link" href="#" aria-label="Next" @click.prevent="emitPages(pages.current_page + 1)">
+            <span aria-hidden="true">&raquo;</span>
             </a>
-          </li>
+        </li>
         </ul>
       </nav>
-      <div>{{ text }}</div>
+      <p>{{ pages }}</p>
     </script>
-    
-      <!-- Modal -->
+    <!-- 新增 / 編輯 modal -->
+    <script type="text/x-template" id="productModalTemp">
       <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
            aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -222,14 +226,16 @@
                 取消
               </button>
               <!-- 更新產品資訊 -->
-              <button type="button" class="btn btn-primary" @click="updateProduct">
+              <button type="button" class="btn btn-primary" @click="getProduct">
                 確認
               </button>
             </div>
           </div>
         </div>
       </div>
-      <!-- 刪除 modal -->
+    </script>
+    <!-- 刪除 modal -->
+    <script type="text/x-template" id="delProductModalTemp">
       <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
            aria-labelledby="delProductModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -256,9 +262,7 @@
           </div>
         </div>
       </div>
-    
-    <!-- Modal -->
-
+    </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
             integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
             crossorigin='anonymous'></script>

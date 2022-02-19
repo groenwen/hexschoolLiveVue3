@@ -33,15 +33,14 @@ createApp({
     },
     methods:{
         checkAdmin(){
-
             // 取出 token
             const token = document.cookie.replace(/(?:(?:^|.*;\s*)groenToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
+            //驗證 API
+            const url = `${this.apiUrl}/api/user/check`;
 
             // 驗證使用者
             axios.defaults.headers.common.Authorization = token;
 
-            //驗證 API
-            const url = `${this.apiUrl}/api/user/check`;
             axios.post(url)
                 .then((res) => {
                     //驗證成功
@@ -153,6 +152,7 @@ createApp({
 
         });
 
+        
         this.checkAdmin();
     }
 }).mount('#app');
