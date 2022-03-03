@@ -4,6 +4,26 @@
 // 加產品到購物車
 // 驗證
 
+//Q 加入購物車 與 更新購物車 id 會混亂
+
+//定義表單規則
+Object.keys(VeeValidateRules).forEach(rule => {
+  if (rule !== 'default') {
+    VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+  }
+});
+
+// 讀取外部的資源
+VeeValidateI18n.loadLocaleFromURL('./js/zh_TW.json');
+
+// Activate the locale
+VeeValidate.configure({
+  generateMessage: VeeValidateI18n.localize('zh_TW'),
+  validateOnInput: true, // 調整為：輸入文字時，就立即進行驗證
+});
+
+const api_url = "https://vue3-course-api.hexschool.io/v2";
+const api_path = "groen";
 
 //先建元件
 //資料橋梁嫁接
@@ -49,8 +69,7 @@ const productModal = {
 const app = Vue.createApp({
   data() {
     return {
-      api_url: "https://vue3-course-api.hexschool.io/v2",
-      api_path: "groen",
+      
       //所有產品
       products: [],
 
@@ -61,7 +80,16 @@ const app = Vue.createApp({
       productItem: {},
 
       //購物車列表
-      carts: []
+      cartsList: [],
+
+      //user
+      user: {
+        email: '',
+        name: '',
+        phone: '',
+        address: '',
+        message: ''
+      }
     };
   },
   components: {
@@ -69,7 +97,7 @@ const app = Vue.createApp({
   },
   methods: {
     updateProducts(page = 1) {
-      let url = `${this.api_url}/api/${this.api_path}/products?page=${page}`;
+      let url = `${api_url}/api/${api_path}/products?page=${page}`;
       axios.get(url)
       .then((res) => {
         this.products = res.data.products;
@@ -83,36 +111,74 @@ const app = Vue.createApp({
       this.$refs.callModal.innerOpenModal();
       this.productItem = item;
     },
-    addToCart(id){
-      let url = `${this.api_url}/api/${this.api_path}/cart`;
-
-      axios.post(url, {data:{'product_id': id, 'qty': 1 }})
-      .then((res) => {
+    //加入購物車
+    addToCart(productId, qty = 1){
+      let url = `${api_url}/api/${api_path}/cart`;
+      let data = {'product_id': productId, qty }
+      axios.post(url, {data}).then((res) => {
         alert(res.data.message);
-      })
-      .catch((err) => {
+        this.updateCarts();
+      }).catch((err) => {
         alert(err.data.message);
       });
-      
     },
-    updateCart(){
-      let url = `${this.api_url}/api/${this.api_path}/cart`;
-
+    //修改品項數量
+    changeQty(cartItemId, qty){
+      let url = `${api_url}/api/${api_path}/cart/${cartItemId}`;
+      let data = {'product_id': cartItemId, qty }
+      axios.put(url, {data}).then((res) => {
+        this.updateCarts();
+        // alert(res.data.message);
+      }).catch((err) => {
+        alert(err.data.message);
+      });
+    },
+    //刪除單一品項
+    delCartItem(cartItemId){
+      let url = `${api_url}/api/${api_path}/cart/${cartItemId}`;
+      axios.delete(url).then((res) => {
+        alert(res.data.message);
+        this.updateCarts();
+      }).catch((err) => {
+        alert(err.data.message);
+      });
+    },
+    //清空購物車
+    clearCarts(){
+      let url = `${api_url}/api/${api_path}/carts`;
+      axios.delete(url).then((res) => {
+        alert(res.data.message);
+        this.updateCarts();
+      }).catch((err) => {
+        alert(err.data.message);
+      });
+    },
+    //更新購物車
+    updateCarts(){
+      let url = `${api_url}/api/${api_path}/cart`;
       axios.get(url)
       .then((res) => {
-        this.carts = res.data.carts;
-        console.log(this.carts, hello);
+        this.cartsList = res.data.data;
+        console.log(res.data.data);
       })
       .catch((err) => {
-        alert(err.data);
+        alert('updateCart ' + url + err);
       });
-    }
+    },
+    //送出表單
+    onSubmit(){
 
+    }
   },
   mounted() {
     this.updateProducts();
-    this.updateCart();
+    this.updateCarts();
   },
 });
+
+//註冊 表單元件
+app.component('VForm', VeeValidate.Form);
+app.component('VField', VeeValidate.Field);
+app.component('ErrorMessage', VeeValidate.ErrorMessage);
 
 app.mount("#app");
