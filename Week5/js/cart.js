@@ -69,6 +69,7 @@ const productModal = {
 const app = Vue.createApp({
   data() {
     return {
+      //當前 ID
       
       //所有產品
       products: [],
