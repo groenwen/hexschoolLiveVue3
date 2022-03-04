@@ -10,12 +10,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-  <style>
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-  </style>
 </head>
 
 <body>
@@ -33,19 +27,21 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in products" :key="item.id">
-              <th scope="row"><img :src="item.imageUrl" alt="" width="50"></th>
+            <tr v-for="item in products" :key="item.id" :class="{ 'd-none' : !item.is_enabled}">
+              <th scope="row"><img :src="item.imageUrl" alt="" width="50" class="img-fluid"></th>
               <td>{{ item.title }}</td>
               <td>${{ item.price }}</td>
               <td class="text-end">
                 <button type="button" class="btn btn-outline-secondary btn-sm"
                   @click="openModal(item)">查看更多</button>&nbsp;
-                <button type="button" class="btn btn-primary btn-sm" @click="addToCart(item.id, qty=1)">加入購物車</button>
+                <button type="button" class="btn btn-primary btn-sm" @click="addToCart(item.id, 1)" :class="{ disabled : isLoading}">
+                  加入購物車
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
-        <pagination :pagination="pagination" @emit-pages="updateProducts"></pagination>
+        <pagination :pagination="pagination" @emit-pages="getProducts"></pagination>
       </div>
     </div>
     <!-- 購物車 -->
@@ -57,8 +53,11 @@
           <table class="table">
             <thead>
               <tr>
-                <td colspan="6" class="text-end">
-                  <button type="button" class="btn btn-outline-danger btn-sm" @click="clearCarts">清除購物車</button>
+                <td colspan="2">
+
+                </td>
+                <td colspan="4" class="text-end">
+                  <button type="button" class="btn btn-outline-danger btn-sm" @click="clearCarts" :class="{ disabled : isLoading}">清除購物車</button>
                 </td>
               </tr>
               <tr>
@@ -73,7 +72,8 @@
             <tbody>
               <tr v-for="item in cartsList.carts" :key="item">
                 <th scope="row">
-                  <a href="" class="btn btn-sm btn-outline-secondary" @click.prevent="delCartItem(item.id)">
+                  <a href="" class="btn btn-sm btn-outline-secondary" @click.prevent="delCartItem(item.id)"
+                  :class="{ disabled : isLoading}">
                     <i class="bi bi-x-lg" style="line-height: 100%;"></i>
                   </a>
                 </th>
@@ -83,11 +83,11 @@
                   <div class="d-flex align-items-center">
                     <div class="input-group input-group-sm" style="width: auto; margin-right: .5rem;">
                       <button class="btn btn-outline-secondary" type="button"
-                        @click="changeQty(item.id, item.qty - 1)"><i class="bi bi-dash"></i></button>
+                        @click="changeQty(item.id, item.product_id, item.qty - 1)"><i class="bi bi-dash"></i></button>
                       <input type="text" class="form-control flex-grow-0 text-center" placeholder="" :value="item.qty"
                         style="width: 40px;">
                       <button class="btn btn-outline-secondary" type="button"
-                        @click="changeQty(item.id, item.qty + 1)"><i class="bi bi-plus"></i></button>
+                        @click="changeQty(item.id, item.product_id, item.qty + 1)"><i class="bi bi-plus"></i></button>
                     </div>
                     {{ item.product.unit }}
                   </div>
@@ -104,63 +104,64 @@
         <div class="col-6">
           <div class="border border-2 border-light p-5">
             <p class="text-center fw-bold h5 mb-3">收件人</p>
-            <v-form v-slot="{errors}" @submit="onSubmit">
+            <v-form v-slot="{errors}" @submit="createOrder" ref="form">
               <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
                 <v-field type="email" id="email" name="email" class="form-control"
-                  :class="{'is-invalid' : errors['email']}" placeholder="請輸入 Email" rules="email|required"
-                  v-model="user.email"></v-field>
+                  :class="{'is-invalid' : errors['email']}" placeholder="請輸入 Email" rules="required|email"
+                  v-model="dataForm.user.email"></v-field>
                 <error-message name="email" class="invalid-feedback"></error-message>
               </div>
               <div class="mb-3">
-                <label for="name" class="form-label">收件人姓名</label>
-                <v-field type="text" id="name" name="姓名" class="form-control"
-                  :class="{'is-invalid' : errors['姓名']}" placeholder="請輸入 收件人姓名" rules="required"
-                  v-model="user.name"></v-field>
+                <label for="name" class="form-label">收件人姓名<span class="text-danger">*</span></label>
+                <v-field type="text" id="name" name="姓名" class="form-control" :class="{'is-invalid' : errors['姓名']}"
+                  placeholder="請輸入 姓名" rules="required" v-model="dataForm.user.name"></v-field>
                 <error-message name="姓名" class="invalid-feedback"></error-message>
               </div>
               <div class="mb-3">
-                <label for="phone" class="form-label">收件人電話</label>
-                <v-field type="number" id="phone" name="電話" class="form-control"
-                  :class="{'is-invalid' : errors['電話']}" placeholder="請輸入 電話" rules="required|digits"
-                  v-model="user.phone"></v-field>
+                <label for="tel" class="form-label">收件人電話<span class="text-danger">*</span></label>
+                <v-field type="tel" id="tel" name="電話" class="form-control" :class="{'is-invalid' : errors['電話']}"
+                  placeholder="請輸入 電話" rules="required|min:8" v-model="dataForm.user.tel"></v-field>
                 <error-message name="電話" class="invalid-feedback"></error-message>
               </div>
               <div class="mb-3">
-                <label for="address" class="form-label">收件人地址</label>
-                <v-field type="text" id="address" name="地址" class="form-control"
-                  :class="{'is-invalid' : errors['地址']}" placeholder="請輸入 地址" rules="required"
-                  v-model="user.address"></v-field>
+                <label for="address" class="form-label">收件人地址<span class="text-danger">*</span></label>
+                <v-field type="text" id="address" name="地址" class="form-control" :class="{'is-invalid' : errors['地址']}"
+                  placeholder="請輸入 地址" rules="required" v-model="dataForm.user.address"></v-field>
                 <error-message name="地址" class="invalid-feedback"></error-message>
               </div>
               <div class="mb-3">
                 <label for="message" class="form-label">留言</label>
-                <v-field type="text" id="message" name="留言" class="form-control"
-                  :class="{'is-invalid' : errors['留言']}" placeholder="請輸入留言" rules="max:10"
-                  v-model="user.message" as="textarea"></v-field>
+                <v-field type="text" id="message" name="留言" class="form-control" :class="{'is-invalid' : errors['留言']}"
+                  placeholder="留言訊息" rules="max:10" v-model="dataForm.message" as="textarea"></v-field>
                 <error-message name="留言" class="invalid-feedback"></error-message>
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <div class="text-end">
+                <button type="submit" class="btn btn-primary" ref="submitBtn">送出訂單</button>
+              </div>
             </v-form>
           </div>
         </div>
       </div>
     </div>
+    <loading :active="isLoading"  :loader="'dots'"></loading>
     <product-modal ref="callModal" :product-item="productItem"></product-modal>
     <!-- app end -->
   </div>
   <!-- component - pagination -->
   <script type="text/x-template" id="paginationTemp">
-    <nav aria-label="Page navigation example">
-      <ul class="pagination">
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-end">
         <li class="page-item" :class="{ disabled : !pagination.has_pre}">
-          <a class="page-link" href="#" aria-label="Previous">
+          <a class="page-link" href="#" aria-label="Previous" @click.prevent="emitPages( pagination.current_page - 1 )">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
-        <li class="page-item" v-for="item in pagination.total_pages"><a class="page-link" href="#" @click.prevent="emitPages(item)">{{ item }}</a></li>
+        <li class="page-item" v-for="item in pagination.total_pages" :class="{'active' : pagination.current_page == item}">
+          <a class="page-link" href="#" @click.prevent="emitPages(item)">{{ item }}</a>
+        </li>
         <li class="page-item" :class="{ disabled : !pagination.has_next}">
-          <a class="page-link" href="#" aria-label="Next" >
+          <a class="page-link" href="#" aria-label="Next" @click.prevent="emitPages( pagination.current_page + 1 )">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
@@ -169,7 +170,7 @@
   </script>
   <!-- component - modal -->
   <script type="text/x-template" id="productModalTemp">
-    <div class="modal fade" ref="productModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" ref="productModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header bg-dark text-white">
@@ -179,7 +180,7 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-6">
-              <img :src="productItem.imageUrl" alt="">
+              <img :src="productItem.imageUrl" class="img-fluid" alt="">
             </div>
             <div class="col-6">
               <span class="badge rounded-pill bg-dark">{{ productItem.category }}</span>
@@ -208,11 +209,14 @@
     crossorigin="anonymous"></script>
   <!-- vue -->
   <script src="https://unpkg.com/vue@3"></script>
+  <!-- loading -->
+  <script src="https://cdn.jsdelivr.net/npm/vue-loading-overlay@5"></script>
+  <link href="https://cdn.jsdelivr.net/npm/vue-loading-overlay@5/dist/vue-loading.css" rel="stylesheet">
   <!-- 表單驗證 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.5.8/vee-validate.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.5.8/dist/vee-validate-rules.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.5.8/dist/vee-validate-i18n.min.js"></script>
-  <script src="./js/cart.js"></script>
+  <script src="./js/app.js" type="module"></script>
 </body>
 
 </html>
