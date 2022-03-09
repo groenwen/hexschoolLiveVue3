@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkweek6"]=self["webpackChunkweek6"]||[]).push([[101],{1101:function(e,n,t){t.r(n),t.d(n,{default:function(){return l}});var o=t(3396);function u(e,n,t,u,r,s){return(0,o.wg)(),(0,o.iD)("h2",null,"首頁")}var r={mounted(){console.log(this.$http.get),console.log("https://vue3-course-api.hexschool.io/v2")}},s=t(89);const c=(0,s.Z)(r,[["render",u]]);var l=c}}]);
+//# sourceMappingURL=101.cac4e392.js.map
