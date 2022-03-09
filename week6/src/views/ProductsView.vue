@@ -36,6 +36,7 @@ import pagination from '../components/PaginationTemp.vue';
 export default {
   data() {
     return {
+      isLoading: false,
       products: [],
       pagination: {},
     };
@@ -50,6 +51,22 @@ export default {
         .then((res) => {
           this.products = res.data.products;
           this.pagination = res.data.pagination;
+        });
+    },
+    // 加入購物車
+    addToCart(productId, qty = 1) {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`;
+      const data = { product_id: productId, qty };
+      this.isLoading = true;
+      this.$http
+        .post(url, { data })
+        .then((res) => {
+          // this.getCarts();
+          // this.$emit('emit-cart');
+          alert(res.data.message);
+        }).catch((err) => {
+          alert(err.data);
+          this.isLoading = false;
         });
     },
   },

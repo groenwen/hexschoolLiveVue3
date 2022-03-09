@@ -3,13 +3,14 @@
     <router-link to="/">Home</router-link> |
     <!-- <router-link to="/about">About</router-link> -->
     <router-link to="/products">產品列表</router-link> |
-    <router-link tp="/cart"><i class="bi bi-cart-fill"></i> 購物車</router-link>
+    <router-link to="/cart"><i class="bi bi-cart-fill"></i> 購物車</router-link>
   </nav>
-  <router-view/>
+  <router-view />
 </template>
 
 <style lang="scss">
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
