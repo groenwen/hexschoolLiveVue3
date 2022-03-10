@@ -131,7 +131,6 @@
   <v-loading :active="isLoading" :loader="'dots'"></v-loading>
   </div>
 </template>
-
 <script>
 export default {
   data () {

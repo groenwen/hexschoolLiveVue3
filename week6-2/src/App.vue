@@ -1,10 +1,4 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <!-- <router-link to="/about">About</router-link> -->
-    <router-link to="/products">產品列表</router-link> |
-    <router-link to="/cart"><i class="bi bi-cart-fill"></i> 購物車</router-link>
-  </nav>
   <router-view/>
 </template>
 

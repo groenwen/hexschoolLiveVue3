@@ -51,9 +51,11 @@ export default {
   },
   methods: {
     getProducts (page = 1) {
+      this.isLoading = true
       this.$http
         .get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products?page=${page}`)
         .then((res) => {
+          this.isLoading = false
           this.products = res.data.products
           this.pagination = res.data.pagination
         })
