@@ -67,8 +67,7 @@
           </tbody>
         </table>
       </div>
-    </div>
-    <div class="col-6">
+      <div class="col-6">
           <div class="border border-2 border-light p-5">
             <p class="text-center fw-bold h5 mb-3">收件人</p>
             <v-form v-slot="{errors}" @submit="createOrder" ref="form">
@@ -127,15 +126,15 @@
               </div>
             </v-form>
           </div>
-        </div>
+      </div>
   </div>
-  <loading :active="isLoading" :loader="'dots'"></loading>
-  <product-modal ref="callModal" :product-item="productItem"></product-modal>
+  <v-loading :active="isLoading" :loader="'dots'"></v-loading>
+  </div>
 </template>
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       isLoading: false,
       // 購物車列表
@@ -146,74 +145,74 @@ export default {
           name: '',
           email: '',
           tel: '',
-          address: '',
+          address: ''
         },
-        message: '',
-      },
-    };
+        message: ''
+      }
+    }
   },
   methods: {
     // 更新購物車
-    getCarts() {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`;
-      this.isLoading = true;
+    getCarts () {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
+      this.isLoading = true
       this.$http.get(url).then((res) => {
-        this.cartsList = res.data.data;
-        this.isLoading = false;
-        console.log(this.cartsList);
+        this.cartsList = res.data.data
+        this.isLoading = false
+        console.log(this.cartsList)
         // 購物車沒有產品時 或數量為 0 時disabled
-        // if (this.cartsList.carts.length <= 0 || this.cartsList.final_total === 0) {
-        //   this.$refs.submitBtn.disabled = true;
-        // } else {
-        //   this.$refs.submitBtn.disabled = false;
-        // }
+        if (this.cartsList.carts.length <= 0 || this.cartsList.final_total === 0) {
+          this.$refs.submitBtn.disabled = true
+        } else {
+          this.$refs.submitBtn.disabled = false
+        }
       }).catch((err) => {
-        this.isLoading = false;
-        alert(`updateCart ${url} ${err}`);
-      });
+        this.isLoading = false
+        alert(`updateCart ${url} ${err}`)
+      })
     },
     // 購物車-修改品項數量
-    changeQty(cartItemId, productId, qty) {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${cartItemId}`;
-      const data = { product_id: productId, qty };
-      this.isLoading = true;
-      console.log(cartItemId, data);
+    changeQty (cartItemId, productId, qty) {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${cartItemId}`
+      const data = { product_id: productId, qty }
+      this.isLoading = true
+      console.log(cartItemId, data)
       this.$http.put(url, { data }).then((res) => {
-        this.getCarts();
-        alert(res.data.message);
+        this.getCarts()
+        alert(res.data.message)
       }).catch((err) => {
-        // alert(err.data);
-        console.log(err);
-        this.isLoading = false;
-      });
+        // alert(err.data)
+        console.log(err)
+        this.isLoading = false
+      })
     },
     // 購物車-刪除單一品項
-    delCartItem(cartItemId) {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${cartItemId}`;
-      this.isLoading = true;
+    delCartItem (cartItemId) {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${cartItemId}`
+      this.isLoading = true
       this.$http.delete(url).then((res) => {
-        this.getCarts();
-        alert(res.data.message);
+        this.getCarts()
+        alert(res.data.message)
       }).catch((err) => {
-        alert(err.data.message);
-        this.isLoading = false;
-      });
+        alert(err.data.message)
+        this.isLoading = false
+      })
     },
     // 清空購物車
-    clearCarts() {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/carts`;
-      this.isLoading = true;
+    clearCarts () {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/carts`
+      this.isLoading = true
       this.$http.delete(url).then((res) => {
-        this.getCarts();
-        alert(res.data.message);
+        this.getCarts()
+        alert(res.data.message)
       }).catch((err) => {
-        alert(err.data.message);
-        this.isLoading = false;
-      });
-    },
+        alert(err.data.message)
+        this.isLoading = false
+      })
+    }
   },
-  mounted() {
-    this.getCarts();
-  },
-};
+  mounted () {
+    this.getCarts()
+  }
+}
 </script>
