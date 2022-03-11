@@ -37,7 +37,7 @@
           </form>
         </div>
       </div>
-      <a href="/" class="mt-5 d-inline-block">回首頁</a>
+      <a href="./" class="mt-5 d-inline-block">回首頁</a>
       <p class="mt-5 mb-3 text-muted">&copy; 2022~∞ - Groen</p>
     </div>
 </template>
