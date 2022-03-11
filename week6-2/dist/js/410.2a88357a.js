@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkweek6_2"]=self["webpackChunkweek6_2"]||[]).push([[410],{2410:function(e,n,r){r.r(n),r.d(n,{default:function(){return k}});var u=r(6252);function t(e,n){return(0,u.wg)(),(0,u.iD)("h2",null,"首頁")}var c=r(3744);const a={},f=(0,c.Z)(a,[["render",t]]);var k=f}}]);
+//# sourceMappingURL=410.2a88357a.js.map
