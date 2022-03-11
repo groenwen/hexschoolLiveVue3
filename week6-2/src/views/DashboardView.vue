@@ -1,6 +1,8 @@
 <template>
-  <h2>後台頁面</h2>
-  <button type="button" class="btn btn-primary" @click="signout()">登出</button>
+  <header class="mt-5">
+    <h1 class="mb-5">後台</h1>
+    <button type="button" class="btn btn-primary" @click="signout()">登出</button>
+  </header>
 </template>
 
 <script>
@@ -14,29 +16,26 @@ export default {
 
       // 驗證使用者
       this.$http.defaults.headers.common.Authorization = token
-      console.log(token)
       if (token) {
         this.$http.post(url)
           .then(() => {
             // 驗證成功
-            // 取得產品資料
-            // this.updateProducts();
-            console.log('登入成功')
+            alert('登入成功')
           })
           .catch((err) => {
             // 驗證錯誤 回到登入頁面
             alert(err.data.message)
-            console.log(err)
             this.$router.push('/login')
           })
       } else {
-        alert('尚未登入後台')
+        alert('尚未登入')
         this.$router.push('/login')
       }
     },
+    // 將 cookie 的 token 到期時間 刪除，表示登出 並回到登入頁面
     signout () {
       document.cookie = 'groenToken=;expires=;'
-      alert('已登出後台')
+      alert('已登出')
       this.$router.push('/login')
     }
   },

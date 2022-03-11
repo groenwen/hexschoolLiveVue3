@@ -1,7 +1,7 @@
 <template>
-  <h2>產品列表</h2>
   <div class="container">
-    <table class="table">
+    <h2>產品列表</h2>
+    <table class="table align-middle">
       <thead>
         <tr>
           <th scope="col">圖片</th>
@@ -28,7 +28,7 @@
     </table>
     <pagination :pages="pagination" @emit-pages="getProducts"></pagination>
     <v-loading :active="isLoading" :loader="'dots'"></v-loading>
-    <product-modal ref="callModal" :product-item="productItem"></product-modal>
+    <product-modal ref="callModal" :product-item="productItem" @modal-addtocart="addToCart"></product-modal>
   </div>
 </template>
 
@@ -64,6 +64,9 @@ export default {
       this.$refs.callModal.innerOpenModal()
       this.productItem = item
     },
+    hideModal () {
+      this.$refs.callModal.innerhideModal()
+    },
     // 加入購物車
     addToCart (productId, qty = 1) {
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
@@ -72,10 +75,9 @@ export default {
       this.$http
         .post(url, { data })
         .then((res) => {
-          // this.getCarts()
-          // this.$emit('emit-cart')
-          alert(res.data.message)
           this.isLoading = false
+          this.hideModal()
+          alert(res.data.message)
         }).catch((err) => {
           alert(err.data)
           this.isLoading = false

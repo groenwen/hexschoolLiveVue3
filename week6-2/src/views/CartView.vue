@@ -1,9 +1,10 @@
 <template>
   <div class="container">
+    <v-loading :active="isLoading" :loader="'dots'"></v-loading>
     <div class="row flex-column align-items-center">
       <div class="col-8">
         <h2 class="py-5 text-center fw-bold">Cart</h2>
-        <table class="table">
+        <table class="table align-middle">
           <thead>
             <tr>
               <td colspan="2"></td>
@@ -13,7 +14,7 @@
                   class="btn btn-outline-danger btn-sm"
                   @click="clearCarts"
                   :class="{ disabled: isLoading }"
-                >
+                  ref="clearCartBtn">
                   清除購物車
                 </button>
               </td>
@@ -43,13 +44,13 @@
                   <div class="input-group input-group-sm" style="width: auto; margin-right: 0.5rem">
                     <button
                       class="btn btn-outline-secondary"
-                      type="button"
+                      type="button" :class="{ disabled : item.qty===1 }"
                       @click="changeQty(item.id, item.product_id, item.qty - 1)">
                       <i class="bi bi-dash"></i>
                     </button>
                     <input type="text" class="form-control flex-grow-0 text-center"
                       placeholder="test" :value="item.qty" style="width: 40px"
-                      aria-labelledby="bty">
+                      aria-labelledby="bty" readonly>
                     <button class="btn btn-outline-secondary" type="button"
                       @click="changeQty(item.id, item.product_id, item.qty + 1)">
                       <i class="bi bi-plus"></i>
@@ -128,10 +129,11 @@
           </div>
       </div>
   </div>
-  <v-loading :active="isLoading" :loader="'dots'"></v-loading>
   </div>
 </template>
 <script>
+const apiUrl = process.env.VUE_APP_API
+const apiPath = process.env.VUE_APP_PATH
 export default {
   data () {
     return {
@@ -153,41 +155,40 @@ export default {
   methods: {
     // 更新購物車
     getCarts () {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
+      const url = `${apiUrl}/api/${apiPath}/cart`
       this.isLoading = true
       this.$http.get(url).then((res) => {
         this.cartsList = res.data.data
         this.isLoading = false
-        console.log(this.cartsList)
         // 購物車沒有產品時 或數量為 0 時disabled
         if (this.cartsList.carts.length <= 0 || this.cartsList.final_total === 0) {
           this.$refs.submitBtn.disabled = true
+          this.$refs.clearCartBtn.disabled = true
         } else {
           this.$refs.submitBtn.disabled = false
+          this.$refs.clearCartBtn.disabled = false
         }
       }).catch((err) => {
         this.isLoading = false
-        alert(`updateCart ${url} ${err}`)
+        alert(`getCarts ${url} ${err}`)
       })
     },
     // 購物車-修改品項數量
     changeQty (cartItemId, productId, qty) {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${cartItemId}`
+      const url = `${apiUrl}/api/${apiPath}/cart/${cartItemId}`
       const data = { product_id: productId, qty }
       this.isLoading = true
-      console.log(cartItemId, data)
       this.$http.put(url, { data }).then((res) => {
         this.getCarts()
         alert(res.data.message)
       }).catch((err) => {
-        // alert(err.data)
-        console.log(err)
+        alert(err.data.message)
         this.isLoading = false
       })
     },
     // 購物車-刪除單一品項
     delCartItem (cartItemId) {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${cartItemId}`
+      const url = `${apiUrl}/api/${apiPath}/cart/${cartItemId}`
       this.isLoading = true
       this.$http.delete(url).then((res) => {
         this.getCarts()
@@ -199,7 +200,7 @@ export default {
     },
     // 清空購物車
     clearCarts () {
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/carts`
+      const url = `${apiUrl}/api/${apiPath}/carts`
       this.isLoading = true
       this.$http.delete(url).then((res) => {
         this.getCarts()
@@ -207,6 +208,18 @@ export default {
       }).catch((err) => {
         alert(err.data.message)
         this.isLoading = false
+      })
+    },
+    // 送出表單
+    createOrder () {
+      const url = `${apiUrl}/api/${apiPath}/order`
+      this.$http.post(url, { data: this.dataForm }).then((res) => {
+        alert(res.data.message)
+        this.getCarts()
+        // 送出後重設表單
+        this.$refs.form.resetForm()
+      }).catch((err) => {
+        alert(err.data.message)
       })
     }
   },
